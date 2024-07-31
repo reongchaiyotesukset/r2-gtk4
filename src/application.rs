@@ -51,25 +51,26 @@ mod imp {
                 let app = self.obj();
 
 
-            /*
+            
                     let quit_action = gio::ActionEntry::builder("quit")
                   .activate(|app: &Self::Type, _, _| {
-                    //app.quit()
-                       println!("Quit!!!!!!!!!!!!!!!!!!!!!!");
+                    app.quit()  
                   })
                   .build();
 
-                    let preferences_action = gio::ActionEntry::builder("app.preferences-test123")
+                    let preferences_action = gio::ActionEntry::builder("preferences")
                    .activate(|app: &Self::Type, _, _| {
-
+					
                     let model = &app.imp().model;
                     let window = app.active_window();
                     let preferences = PreferencesWindow::new(model);
-
-                     preferences.connect_restore_completed(clone!(@weak window =>move |_| {
+                   
+                    preferences.connect_restore_completed(clone!(@weak window =>move |_| {
                             println!("connect_restore_completed");
                     }));
-                        preferences.present();
+                    //preferences.present(&window);
+					preferences.setup_widget();
+					
                     }).build();
 
 
@@ -79,20 +80,15 @@ mod imp {
                     ]);
 
                     let quit_action = app.lookup_action("quit").unwrap();
-                    let preferences_action = app.lookup_action("app.preferences-test123").unwrap();
+                   let preferences_action = app.lookup_action("preferences").unwrap();
 
-
-                    app.bind_property("is-locked", &quit_action, "enabled")
-                    .invert_boolean()
-                    .sync_create()
+                    
+                     app.bind_property("is-locked", &preferences_action, "enabled")
+					.invert_boolean()
+					.sync_create()
                     .build();
-
-                    app.bind_property("is-locked", &preferences_action, "enabled")
-                    .invert_boolean()
-                    .sync_create()
-                    .build();
-
-             */
+                    
+            
 
             }
             
@@ -121,7 +117,7 @@ glib::wrapper! {
        @extends gio::Application, gtk::Application,
         @implements gio::ActionMap, gio::ActionGroup;
 }
-//เรื่มต้น implementsที่สร้างเอง
+
 impl Application {
     
     pub fn run() -> glib::ExitCode  {

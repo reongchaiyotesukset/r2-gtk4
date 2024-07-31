@@ -1,97 +1,96 @@
-use std::{
-           cell::OnceCell,
-};
-
+//use adw::prelude::*;
+//use anyhow::Result;
+//use gettextrs::gettext;
 use gtk::{
     gio,
-    glib::{self,clone},
+    glib::{self, clone},
     subclass::prelude::*,
-    prelude::*,
 };
+
+//use super::{camera_page::CameraPage, password_page::PasswordPage};
 use crate::{
-    application::Application,config,
+  
     models::{ProvidersModel},
-
-
 };
-
+ use gtk::prelude::ObjectExt;
 mod imp {
-    use gtk::subclass::prelude::*;
-    use glib::subclass;
+   use gtk::prelude::ObjectExt;
+   use std::cell::Cell;
+    //use adw::subclass::prelude::*;
+    use glib::subclass::Signal;
+   
 
-
-    use std::{
-        cell::{Cell, OnceCell, RefCell},
-        collections::HashMap,
-    };
     use super::*;
 
-    #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
-    #[template(resource = "../../preferences.ui")]
+    #[derive(gtk::CompositeTemplate, glib::Properties)]
     #[properties(wrapper_type = super::PreferencesWindow)]
+   	#[template(file = "../../../ui/preferences.ui")]
+	
+    pub struct PreferencesWindow {
 
-  pub struct PreferencesWindow {
-       #[property(get, set, construct)]
+        #[property(get, set, construct)]
         pub has_set_password: Cell<bool>,
-
-
     }
 
+    #[glib::object_subclass]
+    impl ObjectSubclass for PreferencesWindow {
+        const NAME: &'static str = "PreferencesWindow";
+        type Type = super::PreferencesWindow;
+       // type ParentType = adw::PreferencesDialog;
 
-  #[glib::object_subclass]
-   impl ObjectSubclass for PreferencesWindow {
+        fn new() -> Self {
+            let actions = gio::SimpleActionGroup::new();
 
-         const NAME: &'static str = "PreferencesWindow";
-         type Type = super::PreferencesWindow;
-         type ParentType = gtk::ApplicationWindow;
-         type Interfaces = (gio::Initable,);
-            fn new() -> Self {
-
-               let actions = gio::SimpleActionGroup::new();
-
-              Self {
-                has_set_password: Cell::default(), // Synced from the application
-              }
+            Self {
+                has_set_password: Cell::default(),
+                
             }
-            fn class_init(klass: &mut Self::Class) {
-                  klass.bind_template();
-            }
-            fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
-                obj.init_template();
-            }
+        }
 
-   }
+        fn class_init(klass: &mut Self::Class) {
+            klass.bind_template();
+        }
 
-        #[glib::derived_properties]
-        impl ObjectImpl for PreferencesWindow {
+        fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
+            obj.init_template();
+        }
+    }
+
+    #[glib::derived_properties]
+    impl ObjectImpl for PreferencesWindow {
+		/*
+        fn signals() -> &'static [Signal] {
+            static SIGNALS: Lazy<Vec<Signal>> =
+                Lazy::new(|| vec![Signal::builder("restore-completed").action().build()]);
+            SIGNALS.as_ref()
+        }
+		*/
 
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
 
-            //obj.setup_actions();
-            //obj.setup_widget();
+            obj.setup_actions();
+            obj.setup_widget();
         }
-        }
-
-        impl  WidgetImpl for PreferencesWindow {}
-        impl  WindowImpl for PreferencesWindow {}
-        impl  ApplicationWindowImpl for PreferencesWindow {}
-        impl InitableImpl for PreferencesWindow {}
-
+    }
+    impl WidgetImpl for PreferencesWindow {}
+    //impl AdwDialogImpl for PreferencesWindow {}
+   // impl PreferencesDialogImpl for PreferencesWindow {}
 }
 
 glib::wrapper! {
     pub struct PreferencesWindow(ObjectSubclass<imp::PreferencesWindow>)
-        @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow,
-        @implements gio::Initable, gio::ActionMap, gio::ActionGroup,gtk::Native,gtk::Root;
+        @extends gtk::Widget;
 }
 
-#[gtk::template_callbacks]
 impl PreferencesWindow {
-   pub fn new(model: &ProvidersModel) -> Self {
-        glib::Object::builder().property("model", model).build()
+    pub fn new(model: &ProvidersModel)->Self{
+	   
+           glib::Object::builder().property("model", model).build()
+	  
     }
+    
     pub fn connect_restore_completed<F>(&self, callback: F) -> glib::SignalHandlerId
     where
         F: Fn(&Self) + 'static,
@@ -105,8 +104,14 @@ impl PreferencesWindow {
             }),
         )
     }
-       fn setup_widget(&self) {
-          let imp = self.imp();
-       }
+   
+    pub fn setup_widget(&self) {
+    
+		println!("Setup_widget!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+    }
 
+    fn setup_actions(&self) {
+        let imp = self.imp();
+
+    }
 }

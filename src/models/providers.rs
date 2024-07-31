@@ -19,6 +19,7 @@ mod imp {
     impl ObjectImpl for ProvidersModel {}
     impl ListModelImpl for ProvidersModel {
         fn item_type(&self) -> glib::Type {
+			println!("item_type!!!!!!!!!!!!!!!!!!!!! active");
             Provider::static_type()
         }
         fn n_items(&self) -> u32 {

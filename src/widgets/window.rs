@@ -1,13 +1,7 @@
-use std::{
-           cell::OnceCell,
-};
-
 use gtk::{
     gio,
-    glib::{self},
-    subclass::prelude::*,
-    prelude::*,
-    subclass::button::ButtonImpl,
+    glib::{self},   
+    prelude::*,   
 };
 use crate::{
     application::Application,config,
@@ -18,8 +12,9 @@ use crate::{
 
 mod imp {
     use gtk::subclass::prelude::*;
-    use glib::subclass;
-
+    use std::{
+        cell::{OnceCell},
+    };
     use super::*;
 
     #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
@@ -61,7 +56,7 @@ mod imp {
                         button_clicked2.is_visible();
                         println!("app.preferences0!!!!");
                  });
-                 klass.install_action("app.preferences1", None, |win, _, _| {
+                 klass.install_action("app.preferences1", None, |_win, _, _| {
                        println!("app.preferences1!!!!");
                  });
 
@@ -74,7 +69,7 @@ mod imp {
 
                  });
 
-                 klass.install_action("app.preferences5", None, |win, _, _|{
+                 klass.install_action("app.preferences5", None, |_win, _, _|{
                      println!("OK!!!");
 
                  });
@@ -158,9 +153,8 @@ impl Window {
             .unwrap()
     }
        #[template_callback]
-        fn on_search_btn_click(&self, btn: &gtk::Button) {
-            let imp = self.imp();
-
+        fn on_search_btn_click(&self, _btn: &gtk::Button) {
+           
             println!("on_search_btn_click!!");
 
 

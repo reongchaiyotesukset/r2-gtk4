@@ -1,7 +1,7 @@
 
 use gtk::{
     gio,
-    glib::{self, clone},
+    glib::{self},
     subclass::prelude::*,
     prelude::*,
 };
@@ -62,14 +62,16 @@ mod imp {
                    .activate(|app: &Self::Type, _, _| {
 					
                     let model = &app.imp().model;
-                    let window = app.active_window();
+                    let _window = app.active_window();
                     let preferences = PreferencesWindow::new(model);
-                   
+                   /*
                     preferences.connect_restore_completed(clone!(@weak window =>move |_| {
                             println!("connect_restore_completed");
-                    }));
+                    }));\
+                    */
                     //preferences.present(&window);
-					preferences.setup_widget();
+                    preferences.present();
+					//preferences.setup_widget();
 					
                     }).build();
 
@@ -79,7 +81,7 @@ mod imp {
                         preferences_action,
                     ]);
 
-                    let quit_action = app.lookup_action("quit").unwrap();
+                   let _quit_action = app.lookup_action("quit").unwrap();
                    let preferences_action = app.lookup_action("preferences").unwrap();
 
                     
